@@ -1,7 +1,7 @@
 # Stores private info
 **/.env
 **/.flaskenv
-plated-mantra-385005-600b3ef4283f.json
+detour-ai-firebase-adminsdk-r95zu-4b4283dd5d.json
 /plated*
 
 # Alex's IDE files
@@ -12,3 +12,10 @@ plated-mantra-385005-600b3ef4283f.json
 
 # This file created by python when it runs, should not be committed
 **/__pycache__
+
+# virtualenv
+.venv
+
+# not needed for deployment
+/data
+/experiments

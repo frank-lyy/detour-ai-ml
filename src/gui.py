@@ -2,6 +2,7 @@ import asyncio
 from pprint import pprint
 import random
 import datetime
+from typing import Union
 
 import pandas as pd
 import plotly.express as px
@@ -19,9 +20,9 @@ px.set_mapbox_access_token(api.get_mapbox_api_key())
 model = Model()
 
 origin_name: str = "MIT"
-origin: Location | None = None
+origin: Union[Location, None] = None
 dest_name: str = "Boston"
-dest: Location | None = None
+dest: Union[Location, None] = None
 interval = 1
 keyword = ""
 detours = None

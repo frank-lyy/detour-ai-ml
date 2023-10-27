@@ -2,16 +2,12 @@ import api
 from data_collection.places import *
 import googlemaps
 from google.cloud import firestore
-import polyline
 import wikipediaapi
 from math import radians, sin, cos, acos
 import numpy as np
 import threading
 import time
-from pprint import pprint
-import csv
-import random
-import os
+from typing import Union
 
 # TEST LOCATIONS
 TEST_ORIGIN = '48 Massachusetts Ave w16, Cambridge, MA 02139'
@@ -52,7 +48,7 @@ def position_filter(origin: Position, destination: Position, detour: Position) -
     return (within_lat or within_long)
 
 
-def get_wikipedia_review(detour: Location) -> Location | None:
+def get_wikipedia_review(detour: Location) -> Union[Location, None]:
     # this might be buggy...test with longer routes!
     wiki = wikipediaapi.Wikipedia('en')
     page = wiki.page(detour.name)
@@ -62,8 +58,7 @@ def get_wikipedia_review(detour: Location) -> Location | None:
     
     return detour if detour.information else None
 
-
-db = firestore.Client(project='plated-mantra-385005')
+db = firestore.Client(project="detour-ai")
 
 def store_location(detour: Location) -> None:
     doc_ref = db.collection(u'detours').document(detour.place_id)
@@ -74,7 +69,7 @@ def store_location(detour: Location) -> None:
     # print(f"store-location was called for {detour.name}")
 
 
-def fetch_location(detour: Location) -> Location | None:
+def fetch_location(detour: Location) -> Union[Location, None]:
     # db = firestore.Client(project='plated-mantra-385005')
     doc_ref = db.collection(u'detours').document(detour.place_id)
     doc = doc_ref.get()
@@ -90,7 +85,7 @@ def fetch_location(detour: Location) -> Location | None:
 
 
 
-def get_waypoints(origin: str | Position, destination: str | Position, max_distance: float | None = None) -> tuple[List[Position], Position, Position, float]:
+def get_waypoints(origin: Union[str, Position], destination: Union[str, Position], max_distance: Union[float, None] = None) -> tuple[List[Position], Position, Position, float]:
     gmaps = googlemaps.Client(key=api.get_google_api_key())
     
     try: 
@@ -223,7 +218,7 @@ def get_reviews(detours: List[Location]):
     return detours_with_reviews
 
 
-def get_detours(origin: str | Position, destination: str | Position, increment=1) -> List[Location]:
+def get_detours(origin: Union[str, Position], destination: Union[str, Position], increment=1) -> List[Location]:
     waypoints, origin_pos, dest_pos, geodesic_distance = get_waypoints(origin=origin, destination=destination)
     detours = possible_detours(waypoints=waypoints, origin=origin_pos, destination=dest_pos, increment=increment)
     
